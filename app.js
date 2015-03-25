@@ -15,7 +15,7 @@ app.use(bodyParser.json())
 var server = app.listen(3000, function(req, res) {
 //    var a = serverInst.test();
 //    console.log(a);
-//    serverInst.instrument();
+    serverInst.instrument('sample-app-code');
 	var host = server.address().address;
 	var port = server.address().port;
 	console.log('example app listening at http://%s:%s', host, port);
