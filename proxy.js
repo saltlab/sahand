@@ -1,6 +1,7 @@
 var url = require('url');
 var jsdom = require('jsdom-nogyp');
 var http = require('http');
+var esinstrument = require('./esinstrument');
 
 exports.instrumentResponse = function (req, res) {
     var instrumentedResponse = '';
@@ -51,11 +52,28 @@ function proxify (options, method, data, res) {
             if (typeof contentType != 'undefined' && contentType.toLowerCase().indexOf('text/html') > -1) {
                 console.log('html');
                 jsdom.env(str, ["http://code.jquery.com/jquery.js"], function (error, window) {
-                    str = window.document.innerHTML;
+//                    var $ = window.$;
+                    if (!(typeof window.document.getElementsByTagName('title') == 'undefined') && !(typeof window.document.getElementsByTagName('title')[0] == 'undefined'))
+                        console.log('title: ', window.document.getElementsByTagName('title')[0].innerHTML);
+                    console.log('num of script tags: ', window.document.getElementsByTagName('script').length);
+
+                    if (window.sahand == true) {
+
+                    }
+                    else {
+                        instrumentInlineScript(window.document);
+                        console.log('>>>>> ', window.document.outerHTML);
+                        str = window.document.innerHTML;
+                    }
+
                 });
             }
             else if (typeof contentType != 'undefined' && contentType.toLowerCase().indexOf('javascript') > -1) {
                 console.log('javascript');
+                var instrumentedAst = esinstrument.instrumentAst(str);
+                var instrumentedScript = esinstrument.generateScript(instrumentedAst);
+//                result.data = instrumentedScript;
+                str = instrumentedScript;
             }
             else {
                 console.log('------- ', contentType);
@@ -73,4 +91,40 @@ function proxify (options, method, data, res) {
         request.write(data);
     }
     request.end();
+}
+
+function instrumentInlineScript(document) {
+    var existingScriptTags = document.getElementsByTagName('script');
+    if (existingScriptTags == null || typeof existingScriptTags == 'undefined') {
+        console.warn('existingScriptTags UNDEFINED');
+    }
+    else {
+        for (var i = 0; i < existingScriptTags.length; i ++) {
+            var elem = existingScriptTags[i];
+            var instrumented = elem.getAttribute('instrumented');
+            if ('true' == instrumented) {
+                continue;
+            }
+            var srcAttr = elem.getAttribute('src');
+            if (srcAttr == null || srcAttr == 'undefined') {
+                replaceInlineScript(elem, document);
+            }
+            else {
+                // TODO REPLACE EXTERNAL FILES TOO?
+            }
+        }
+    }
+}
+
+function replaceInlineScript(node, document) {
+    var scriptText = node.innerHTML;
+
+    var instrumentedAst = esinstrument.instrumentAst(scriptText);
+    var instrumentedScript = esinstrument.generateScript(instrumentedAst);
+
+    var instrumentedNode = document.createElement('script');
+    instrumentedScript.setAttribute('instrumented', 'true');
+    instrumentedScript.innerHTML = instrumentedScript;
+
+    node.parentNode.replaceChild(instrumentedNode, node);
 }
