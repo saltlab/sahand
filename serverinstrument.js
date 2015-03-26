@@ -22,6 +22,8 @@ exports.instrument = function(dir) {
             var filePath = dir + '/' + fileName;
             var script = fs.readFileSync(filePath, 'utf8');
             var instrumentedAst = esinstrument.instrumentAst(script, filePath);
+            console.log('**************');
+            console.log(instrumentedAst);
             var instrumentedScript = esinstrument.generateScript(instrumentedAst); // todo
             console.log('==============');
             console.log(instrumentedScript);

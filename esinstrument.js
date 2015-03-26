@@ -85,7 +85,7 @@ function instrumentFunctionEnter(node) {
         name = node.id;
         if (name == null || typeof name == 'undefined') {
             // TODO TODO TODO
-            name = sourcePage + ':' + node.body.loc.start.line + ':' + node.body.loc.start.column; ///// + '-' + node.body.loc.end.line + ':' + node.body.loc.end.column;
+/////////////            name = sourcePage + ':' + node.body.loc.start.line + ':' + node.body.loc.start.column; ///// + '-' + node.body.loc.end.line + ':' + node.body.loc.end.column;
             // TODO TODO TODO
         }
     }
