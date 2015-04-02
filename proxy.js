@@ -61,6 +61,7 @@ function proxify (options, method, data, res) {
 
                     }
                     else {
+                        appendSahandFiles(window.document);
                         instrumentInlineScript(window.document);
                         console.log('>>>>> ', window.document.outerHTML);
                         str = window.document.innerHTML;
@@ -127,4 +128,23 @@ function replaceInlineScript(node, document) {
     instrumentedScript.innerHTML = instrumentedScript;
 
     node.parentNode.replaceChild(instrumentedNode, node);
+}
+
+function appendSahandFiles(document) {
+    var functionTraceFile = document.createElement('script');
+    functionTraceFile.setAttribute('instrumented', 'true');
+    functionTraceFile.setAttribute('src', 'javascripts/sahand-log.js')
+
+    var asyncTraceFile = document.createElement('script');
+    functionTraceFile.setAttribute('instrumented', 'true');
+    functionTraceFile.setAttribute('src', 'javascripts/asynctrace.js')
+
+    if (document.head.children.length > 0) {
+        document.head.insertBefore(functionTraceFile, document.head.children[0]);
+        document.head.insertBefore(asyncTraceFile, document.head.children[0]);
+    }
+    else {
+        document.head.children[0] = asyncTraceFile;
+        document.head.children[1] = functionTraceFile;
+    }
 }
