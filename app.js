@@ -3,6 +3,8 @@ var app = express();
 var bodyParser = require('body-parser');
 var proxy = require('./proxy');
 
+var numOfIncomingReqs = 0;
+
 var serverInst = require('./serverinstrument.js');
 
 app.set('view engine', 'jade');
@@ -25,7 +27,7 @@ var server = app.listen(3000, function(req, res) {
 
 app.get('/', function(req, res) {
 //    res.sendFile('views/index.html', {root: __dirname })
-    console.log(1);
+    console.log('num of incoming requests: ', numOfIncomingReqs ++);
     proxy.instrumentResponse(req, res);
 });
 /*

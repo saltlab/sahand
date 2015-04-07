@@ -1,7 +1,8 @@
 var url = require('url');
-var jsdom = require('jsdom-nogyp');
+var jsdom = require('jsdom');
 var http = require('http');
 var esinstrument = require('./esinstrument');
+var $ = require('jQuery');
 
 exports.instrumentResponse = function (req, res) {
     var instrumentedResponse = '';
@@ -62,7 +63,7 @@ function proxify (options, method, data, res) {
                     }
                     else {
                         appendSahandFiles(window.document);
-                        instrumentInlineScript(window.document);
+/////////                           //instrumentInlineScript(window.document);
                         console.log('>>>>> ', window.document.outerHTML);
                         str = window.document.innerHTML;
                     }
@@ -93,7 +94,7 @@ function proxify (options, method, data, res) {
     }
     request.end();
 }
-
+/*
 function instrumentInlineScript(document) {
     var existingScriptTags = document.getElementsByTagName('script');
     if (existingScriptTags == null || typeof existingScriptTags == 'undefined') {
@@ -129,22 +130,24 @@ function replaceInlineScript(node, document) {
 
     node.parentNode.replaceChild(instrumentedNode, node);
 }
-
+*/
 function appendSahandFiles(document) {
     var functionTraceFile = document.createElement('script');
-    functionTraceFile.setAttribute('instrumented', 'true');
-    functionTraceFile.setAttribute('src', 'javascripts/sahand-log.js')
-
+    functionTraceFile['instrumented'] = true;
+    functionTraceFile.src = 'javascripts/sahand-log.js';
+    //functionTraceFile.setAttribute('instrumented', 'true');
+    //functionTraceFile.setAttribute('src', 'javascripts/sahand-log.js');
+/*
     var asyncTraceFile = document.createElement('script');
     functionTraceFile.setAttribute('instrumented', 'true');
-    functionTraceFile.setAttribute('src', 'javascripts/asynctrace.js')
-
+    functionTraceFile.setAttribute('src', 'javascripts/asynctrace.js');
+*/
     if (document.head.children.length > 0) {
         document.head.insertBefore(functionTraceFile, document.head.children[0]);
-        document.head.insertBefore(asyncTraceFile, document.head.children[0]);
+        //document.head.insertBefore(asyncTraceFile, document.head.children[0]);
     }
     else {
-        document.head.children[0] = asyncTraceFile;
-        document.head.children[1] = functionTraceFile;
+        //document.head.children[0] = asyncTraceFile;
+        document.head.children[0] = functionTraceFile;
     }
 }
