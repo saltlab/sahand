@@ -18,9 +18,24 @@ exports.instrumentAst = function (script) {
                 console.log('ReturnStatement');
                 instrumentReturnStatement(node);
             }
-            else if ('FunctionDeclaration' == node.type || 'FunctionExpression' == node.type) {
+/*            else if ('FunctionDeclaration' == node.type || 'FunctionExpression' == node.type) {
                 instrumentFunctionEnter(node);
                 console.log('FunctionDeclaration');
+            }
+*/          else if ('FunctionDeclaration' == node.type) {
+                instrumentFunctionEnter(node, false);
+                console.log('FunctionDeclaration');
+            }
+            else if ('FunctionExpression' == node.type) {
+                // todo
+                if ('CallExpression' == parent.type) {  // CALLBACK
+                    console.log('FunctionExpression - Callback');
+                    instrumentFunctionEnter(node, true);
+                }
+                else {  // no callback, like function declaration
+                    instrumentFunctionEnter(node, false);
+                    console.log('FunctionExpression');
+                }
             }
             else if ('CallExpression' == node.type) {
                 console.log('CallExpression');
@@ -58,13 +73,14 @@ function instrumentReturnStatement(node) {
     node.argument = returnStatement;
 }
 
-function instrumentFunctionEnter(node) {
+function instrumentFunctionEnter(node, isCallback) {
+    var functionEnterName = '_functionEnter_cb' ? isCallback : '_functionEnter';
     var name;
 
     // TODO TODO TODO TODO TODO TODO
     if (node.type == 'FunctionDeclaration') {
         // TODO TODO TODO TODO TODO TODO
-        if (node.id.name == '_functionEnter' || node.id.name == '_functionExit')
+        if (node.id.name == '_functionEnter' || node.id.name == '_functionExit' || node.id.name == '_functionEnter_callback')
             return estraverse.VisitorOption.Skip; //////////////// TODO TODO TODO ?????????????
 
         name = node.id.name;
@@ -118,7 +134,7 @@ function instrumentFunctionEnter(node) {
     expressionField["type"] = "CallExpression";
     var calleeField = {};
     calleeField["type"] = "Identifier";
-    calleeField["name"] = "_functionEnter";
+    calleeField["name"] = functionEnterName; // todo "_functionEnter";
     expressionField["callee"] = calleeField;
     var argumentField = [];
     var originalArguments = {};

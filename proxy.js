@@ -137,17 +137,17 @@ function appendSahandFiles(document) {
     functionTraceFile.src = 'javascripts/sahand-log.js';
     //functionTraceFile.setAttribute('instrumented', 'true');
     //functionTraceFile.setAttribute('src', 'javascripts/sahand-log.js');
-/*
+
     var asyncTraceFile = document.createElement('script');
     functionTraceFile.setAttribute('instrumented', 'true');
     functionTraceFile.setAttribute('src', 'javascripts/asynctrace.js');
-*/
+
     if (document.head.children.length > 0) {
         document.head.insertBefore(functionTraceFile, document.head.children[0]);
-        //document.head.insertBefore(asyncTraceFile, document.head.children[0]);
+        document.head.insertBefore(asyncTraceFile, document.head.children[0]);
     }
     else {
-        //document.head.children[0] = asyncTraceFile;
-        document.head.children[0] = functionTraceFile;
+        document.head.children[0] = asyncTraceFile;
+        document.head.children[1] = functionTraceFile;
     }
 }

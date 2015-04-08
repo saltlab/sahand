@@ -20,6 +20,30 @@ function _functionEnter(args) {
 
     var trace = JSON.stringify({messageType: "FUNCTION_CALL", timeStamp: Date.now(), targetFunction: locName, counter: traceCounter++});
     bufferLog(trace);
+
+    //console.log('xxxxxxxxxxx ', args);
+    //console.log(getParamNames(arguments.callee.caller.toString()));
+    //var argNames = getParamNames(args.callee.caller.toString());
+    //console.log(argNames);
+
+    for (var i = 0; i < args.length; i ++) {
+        //console.log(args[i]);
+        //console.log(args[i].toString());
+
+        if (isFunction(args[i])) {
+            var name = args[i].name;
+            // TODO add a callback edge between the parent node and the named function
+        }
+    }
+}
+
+
+function _functionEnter_cb(args) { // means an anonymous callback
+    var locName = getCallerFunctionName(args);
+    console.log('FUNCTION ENTER CALLBACK: ', locName);
+
+    var trace = JSON.stringify({messageType: "FUNCTION_CALL_CB", timeStamp: Date.now(), targetFunction: locName, counter: traceCounter++});
+    bufferLog(trace);
 }
 
 function _functionExit(args) {
@@ -44,4 +68,17 @@ function _functionReturn(args, orig_return) {
     return orig_return;
 }
 
+var STRIP_COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
+var ARGUMENT_NAMES = /([^\s,]+)/g;
+function getParamNames(func) {
+    var fnStr = func.toString().replace(STRIP_COMMENTS, '');
+    var result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).match(ARGUMENT_NAMES);
+    if(result === null)
+        result = [];
+    return result;
+}
 
+function isFunction(arg) {
+    var getType = {};
+    return arg && getType.toString.call(arg) === '[object Function]';
+}
