@@ -28,6 +28,10 @@ var server = app.listen(3000, function(req, res) {
 app.get('/', function(req, res) {
 //    res.sendFile('views/index.html', {root: __dirname })
     console.log('num of incoming requests: ', numOfIncomingReqs ++);
+
+    //if (req.headers.host.indexof('temp.html') > -1)
+    //    res.sendFile('views/temp.html', {root: __dirname })
+
     proxy.instrumentResponse(req, res);
 });
 /*
