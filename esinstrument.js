@@ -40,6 +40,13 @@ exports.instrumentAst = function (script) {
             else if ('CallExpression' == node.type) {
                 console.log('CallExpression');
             }
+            else if ('ExpressionStatement' == node.type) {
+                if (typeof node['expression'] != 'undefined' && typeof node['expression']['callee'] != 'undefined' && typeof node['expression']['callee']['property'] != 'undefined' && node['expression']['callee']['property']['name'] != 'undefined') {
+                    if (node['expression']['callee']['property']['name'] == 'emit') {
+                        instrumentEmitEvent(node);
+                    }
+                }
+            }
         },
         leave: function(node, parent) {
             if ('VariableDeclarator' == node.type) {
@@ -51,12 +58,25 @@ exports.instrumentAst = function (script) {
     return ast;
 }
 
+function instrumentEmitEvent(node) {
+    var emitWrapper = {};
+    emitWrapper['type'] = 'CallExpression';
+    emitWrapper['callee'] = {};
+    emitWrapper['callee']['type'] = 'Identifier';
+    emitWrapper['callee']['name'] = "_eventEmit";
+    emitWrapper['arguments'] = [];
+
+//    var originialExpression = node['expression'];
+    emitWrapper['arguments'][0] = node['expression'];
+    node['expression'] = emitWrapper;
+}
+
 function instrumentReturnStatement(node) {
     var returnStatement = {};
     returnStatement["type"] = "CallExpression";
     returnStatement["callee"] = {};
-    returnStatement["callee"]["type"] = "Identifier",
-        returnStatement["callee"]["name"] = "_functionReturn";
+    returnStatement["callee"]["type"] = "Identifier";
+    returnStatement["callee"]["name"] = "_functionReturn";
     returnStatement["arguments"] = [];
     // the return statement is used without any arguments. for example: return;
     var originalArguments = {};
