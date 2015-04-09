@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var proxy = require('./proxy');
+var url = require('url');
 
 var numOfIncomingReqs = 0;
 
@@ -17,11 +18,12 @@ app.use(bodyParser.json())
 var server = app.listen(3000, function(req, res) {
 //    var a = serverInst.test();
 //    console.log(a);
+    /*
     serverInst.instrument('sample-app-code');
 	var host = server.address().address;
 	var port = server.address().port;
 	console.log('example app listening at http://%s:%s', host, port);
-
+*/
 
 });
 
@@ -32,7 +34,14 @@ app.get('/', function(req, res) {
     //if (req.headers.host.indexof('temp.html') > -1)
     //    res.sendFile('views/temp.html', {root: __dirname })
 
-    proxy.instrumentResponse(req, res);
+    var urlParts = url.parse(req.url, true);
+    if (urlParts.path.indexOf('sahand') > -1) { // Sahand tracing request
+        res.send('hello');
+
+    }
+    else {
+//    proxy.instrumentResponse(req, res);
+    }
 });
 /*
 app.get('/temp', function(req, res) {

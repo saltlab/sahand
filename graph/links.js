@@ -1,4 +1,4 @@
-function Link (name) {
+exports.Link = function (name) {
     this.name = name;
     this.source = null;
     this.sink = null;
@@ -17,7 +17,7 @@ Link.prototype.setName = function (name) {
 FunctionCall.prototype = new Link();
 FunctionCall.prototype.constructor = FunctionCall;
 
-function FunctionCall () {
+exports.FunctionCall = function () {
     this.name = 'FunctionCall';
 }
 
@@ -26,21 +26,21 @@ function FunctionCall () {
 XHROpen.prototype = new Link();
 XHROpen.prototype.constructor = XHROpen;
 
-function XHROpen () {
+exports.XHROpen = function () {
     this.name = 'XHROpen';
 }
 
 XHRSend.prototype = new Link();
 XHRSend.prototype.constructor = XHRSend;
 
-function XHRSend () {
+exports.XHRSend = function() {
     this.name = 'XHRSend';
 }
 
 XHRCallback.prototype = new Link();
 XHRCallback.prototype.constructor = XHRCallback;
 
-function XHRCallback () {
+exports.XHRCallback = function () {
     this.name = 'XHRCallback';
 }
 
@@ -48,6 +48,6 @@ function XHRCallback () {
 Callback.prototype = new Link();
 Callback.prototype.constructor = Callback;
 
-function Callback () {
+exports.Callback = function () {
     this.name = 'Callback';
 }

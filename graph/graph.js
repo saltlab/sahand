@@ -9,22 +9,22 @@ var serverFunctions = [];
 
 var edges = [];
 
-function addEntryPoint (node) {
+exports.addEntryPoint = function (node) {
     entryPoints.push(node);
 }
 
-function addFunction (f) {
+exports.addFunction = function (f) {
     functions.push(f);
 }
 
-function addXhr (xhr) {
+exports.addXhr = function (xhr) {
     xhrs.push(xhr);
 }
 
-function addTimeout (to) {
+exports.addTimeout = function (to) {
     timeouts.push(to);
 }
 
-function addInterval (interval) {
+exports.addInterval = function (interval) {
     intervals.push(interval);
 }

@@ -1,4 +1,4 @@
-function Node (name) {
+exports.Node = function (name) {
     this.name = name;
     this.source = [];
     this.sink = [];
@@ -28,7 +28,7 @@ Node.prototype.addSink = function (newSink) {
 Function.prototype = new Node();
 Function.prototype.constructor = Function;
 
-function Function (name) {
+exports.Function = function (name) {
     this.name = name;
     this.lineNo = -1;
     this.body = '';
@@ -53,7 +53,7 @@ Function.prototype.setBody = function (body) {
 XHR.prototype = new Node();
 XHR.prototype.constructor = XHR;
 
-function XHR (name) {
+exports.XHR = function (name) {
     this.name = name;
     this.opener = null;
     this.sender = null;

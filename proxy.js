@@ -1,5 +1,5 @@
 var url = require('url');
-var jsdom = require('jsdom');
+var jsdom = require('jsdom-nogyp');
 var http = require('http');
 var esinstrument = require('./esinstrument');
 var $ = require('jQuery');
@@ -52,6 +52,7 @@ function proxify (options, method, data, res) {
             }
             if (typeof contentType != 'undefined' && contentType.toLowerCase().indexOf('text/html') > -1) {
                 console.log('html');
+
                 jsdom.env(str, ["http://code.jquery.com/jquery.js"], function (error, window) {
 //                    var $ = window.$;
                     if (!(typeof window.document.getElementsByTagName('title') == 'undefined') && !(typeof window.document.getElementsByTagName('title')[0] == 'undefined'))
@@ -131,6 +132,7 @@ function replaceInlineScript(node, document) {
     node.parentNode.replaceChild(instrumentedNode, node);
 }
 */
+/*
 function appendSahandFiles(document) {
     var functionTraceFile = document.createElement('script');
     functionTraceFile['instrumented'] = true;
@@ -151,3 +153,4 @@ function appendSahandFiles(document) {
         document.head.children[1] = functionTraceFile;
     }
 }
+*/
